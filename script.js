@@ -49,7 +49,7 @@ $(document).on('click', '#power', function(){
          player.mute();
     }
     else{
-        $('.tv-icon').hide();
+        $('.tv-icons').hide();
         $('#cover').hide();
         player.unMute();
         player.playVideo();
