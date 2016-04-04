@@ -1,5 +1,4 @@
-var player,
-    time_update_interval = 0;
+var player, time_update_interval = 0;
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('video-placeholder', {
@@ -8,19 +7,17 @@ function onYouTubeIframeAPIReady() {
         videoId: 'Xa0Q0J5tOP0',
         playerVars: {
             color: 'white',
-            playlist: 'taJ60kskkns,FG0fTKAqZ5g',
+            playlist: 'taJ60kskkns,FG0fTKAqZ5g,vKH-rcO6PA8,wIyoTuZ9r3c,NFn_So_WWEs,y53AyAjQy9s,4Chi66oF_Tk,7o_w_Sy6bU0,ebHXNvO77yE,1fc_-tzvls0',
 			controls: 0,
 			showinfo: 0,
 			autoplay: 0,
 			modestbranding: 1
-			
         },
         events: {
             onReady: initialize
         }
     });
 }
-
 function initialize(){
 
     // Update the controls on load
@@ -41,6 +38,56 @@ function initialize(){
     $('#volume-input').val(Math.round(player.getVolume()));
 }
 
+TV = {
+    Control: {
+        mute: function() {
+            var mute_toggle = $(this);
+            if(player.isMuted() && TV.Control.tv_status()){
+                player.unMute();
+                mute_toggle.text('volume_up');
+                $('.wrapper').find('.fa-volume-off').hide(); 
+            }
+            else{
+                player.mute();
+                mute_toggle.text('volume_off');
+                $('.wrapper').find('.fa-volume-off').show(); 
+            }
+        },
+        tv_status: function(){
+            if($('#power').attr('class') == 'on'){
+                $('.tv-icon').hide();
+                $('.text-info').hide();
+                return true;
+            }
+            return false;
+        },
+        show_icon: function(class_string, value=null){
+            clearTimeout($('.tv-icons').stop().data('timer'));
+            $('.delayed').removeClass('delayed');
+            $('.tv-icons').hide();
+            //$('.tv-icon').hide();
+            //$('.text-info').hide();
+            $(class_string).addClass('delayed');
+            if(value){
+                $('.text-info').text(value).show();//.addClass('delayed');//show().delay(5000).fadeOut();
+            }
+            //$('.tv-icon').hide();
+            $('.delayed').show();
+            //$('.tv-icons').show();
+            $('.tv-icons').fadeIn(function() {
+                var elem = $(this);
+                $.data(this, 'timer', setTimeout(function() { elem.fadeOut(); }, 5000));
+                elem.removeClass('delayed');
+            });
+        },
+        chanel_num: function(){
+            return player.getPlaylistIndex()+1;
+        }
+    }
+}
+
+
+
 $(document).on('click', '#power', function(){
     var new_class = $(this).attr('class') == 'off' ? 'on' : 'off' ;
     $(this).attr('class', new_class);
@@ -53,86 +100,68 @@ $(document).on('click', '#power', function(){
         $('#cover').hide();
         player.unMute();
         player.playVideo();
+        TV.Control.show_icon('.tv-icons .fa-sort', TV.Control.chanel_num());
     }
 });
 
 $(document).on('click','#mute-toggle', function() {
-    if(tv_status()){
-        mute();
+    if(TV.Control.tv_status()){
+        TV.Control.mute();
         $('.text-info').text(0);
     } 
 });
 
-function mute(){
- var mute_toggle = $(this);
-    if(player.isMuted() && tv_status()){
-        player.unMute();
-        mute_toggle.text('volume_up');
-        $('.wrapper').find('.fa-volume-off').hide(); 
-    }
-    else{
-        player.mute();
-        mute_toggle.text('volume_off');
-        $('.wrapper').find('.fa-volume-off').show(); 
-    }
-}
-
-
-
 $(document).on('click', '#volume-up', function(){
-    if(tv_status()){
+    if(TV.Control.tv_status()){
         player.unMute();
         var volume_level = player.getVolume()+5;
         player.setVolume(volume_level);
         volume_level = (player.getVolume()+5)/5 == 21 ? 20: (player.getVolume()+5)/5;
-        show_icon('.tv-icons .fa-volume-up', volume_level);
-        //$('.fa-volume-up').show();
-        //$('.text-info').text(player.getVolume()/5).show();
+        TV.Control.show_icon('.tv-icons .fa-volume-up', volume_level);
     }
     
 });
 
 $(document).on('click', '#volume-down', function(){
-    if(tv_status()){
+    if(TV.Control.tv_status()){
         player.unMute();
         var volume_level = player.getVolume()-5;
         player.setVolume(volume_level);
         volume_level = (player.getVolume()-5)/5 == 0 ? 1: (player.getVolume()-5)/5;
-        show_icon('.tv-icons .fa-volume-down', volume_level);
-        //$('.fa-volume-down').show();
-        //$('.text-info').text(player.getVolume()/5).show();
+        TV.Control.show_icon('.tv-icons .fa-volume-down', volume_level);
     }
 });
 
-function tv_status(){
-    if($('#power').attr('class') == 'on'){
-        $('.tv-icon').hide();
-        $('.text-info').hide();
-        return true;
-    }
-    return false;
-}
 
-function show_icon(class_string, value=null){
-    clearTimeout($('.tv-icons').stop().data('timer'));
-    $('.tv-icons').hide();
-    $('.tv-icon').hide();
-    $('.text-info').hide();
-    //$('.delayed').removeClass('delayed');
-    $(class_string).addClass('delayed');
-    if(value){
-        $('.text-info').text(value).show();//.addClass('delayed');//show().delay(5000).fadeOut();
+$(document).on('click', '#prev-chanel', function(){
+    if(TV.Control.tv_status()){
+        if (TV.Control.chanel_num() == 1){
+            chanel = 11
+            player.playVideoAt(10);
+        }else{
+            chanel = TV.Control.chanel_num()-1;
+            player.previousVideo();
+        }
+        TV.Control.show_icon('.tv-icons .fa-sort', chanel);
     }
-    $('.delayed').show();
-    $('.tv-icons').show();
-    $('.tv-icons').fadeIn(function() {
-        var elem = $(this);
-        $.data(this, 'timer', setTimeout(function() { elem.fadeOut(); }, 5000));
-        //elem.removeClass('delayed');
-    });
-}
+});
 
-//http://stackoverflow.com/questions/2578628/how-to-stop-override-a-jquery-timeout-function
+$(document).on('click', '#next-chanel', function(){
+    if(TV.Control.tv_status()){
+        if (TV.Control.chanel_num() == 11){
+            chanel = 1
+            player.playVideoAt(0);
+        }else{
+            chanel = TV.Control.chanel_num()+1;
+            player.nextVideo();
+        }
+        TV.Control.show_icon('.tv-icons .fa-sort', chanel);
+    }
+});
+
+
+
+
 
 
 
