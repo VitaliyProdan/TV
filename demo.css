@@ -3,7 +3,10 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+body{
+    background: url(images/O4WIJ30.jpg) no-repeat center center fixed;
+    background-size: 100% 100%;
+}
 
 #video-placeholder{
 	padding-top: 37px;
@@ -74,6 +77,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
     margin-right: 65px;
     padding: 30px 15px;
     z-index: 100;
+    background-color: #1F021F;
+    color: white;
 }
 .block-1-3{
     width: 28%;
@@ -82,10 +87,13 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
     cursor: pointer;
     float: left;
     margin: 15px 5px;
-    border: 1px solid #000;
+    border: 1px solid #fff;
     text-align: center;
-    border-radius: 17px;
+    border-radius: 35px;
     padding: 2px;
+}
+.console-button .fa, .console-button.chanel-switcher{
+    padding: 5px;
 }
 .fa.fa-power-off{
     color: red;
@@ -108,3 +116,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
     font-size: 30px;
     top: 54px;
 }
+
+ /* -webkit-filter: brightness(0.05); */
+    /* -webkit-filter: contrast(4.7); */

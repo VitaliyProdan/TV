@@ -1,4 +1,4 @@
-var player, time_update_interval = 0;
+var player;
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('video-placeholder', {
@@ -19,27 +19,29 @@ function onYouTubeIframeAPIReady() {
     });
 }
 function initialize(){
-
-    // Update the controls on load
-    updateTimerDisplay();
-    updateProgressBar();
 	player.mute();
-    // Clear any old interval.
-    clearInterval(time_update_interval);
-
-    // Start interval to update elapsed time display and
-    // the elapsed part of the progress bar every second.
-    time_update_interval = setInterval(function () {
-        updateTimerDisplay();
-        updateProgressBar();
-    }, 1000);
-
-
     $('#volume-input').val(Math.round(player.getVolume()));
 }
 
 TV = {
     Control: {
+        on_off: function(selector){
+            var new_class = selector.attr('class') == 'off' ? 'on' : 'off' ;
+            selector.attr('class', new_class);
+            if ( new_class == 'off'){
+                TV.Control.drop_prev_icons();
+                $('#cover').show();
+                player.mute();
+                TV.Sleep.clear();
+            }
+            else{
+                $('.tv-icons').hide();
+                $('#cover').hide();
+                player.unMute();
+                player.playVideo();
+                TV.Control.show_icon('.tv-icons .fa-sort', TV.Control.chanel_num());
+            }
+        },
         mute: function() {
             var mute_toggle = $(this);
             if(player.isMuted() && TV.Control.tv_status()){
@@ -61,19 +63,18 @@ TV = {
             }
             return false;
         },
-        show_icon: function(class_string, value=null){
+        drop_prev_icons: function(){
             clearTimeout($('.tv-icons').stop().data('timer'));
-            $('.delayed').removeClass('delayed');
+            $('.delayed').removeClass('delayed').hide();
             $('.tv-icons').hide();
-            //$('.tv-icon').hide();
-            //$('.text-info').hide();
+        },
+        show_icon: function(class_string, value=null){
+            TV.Control.drop_prev_icons();
             $(class_string).addClass('delayed');
             if(value){
-                $('.text-info').text(value).show();//.addClass('delayed');//show().delay(5000).fadeOut();
+                $('.text-info').text(value).show();
             }
-            //$('.tv-icon').hide();
             $('.delayed').show();
-            //$('.tv-icons').show();
             $('.tv-icons').fadeIn(function() {
                 var elem = $(this);
                 $.data(this, 'timer', setTimeout(function() { elem.fadeOut(); }, 5000));
@@ -82,81 +83,140 @@ TV = {
         },
         chanel_num: function(){
             return player.getPlaylistIndex()+1;
+        },
+        set_chanel: function(selector){
+            val = $('#chanel-switcher-holder').val();
+            chanel = selector.text();
+            total = val+chanel;
+            if(val.length==1){
+                player.playVideoAt(parseInt(total)-1);
+                TV.Control.show_icon('.tv-icons .fa-sort', total);
+                $('#chanel-switcher-holder').val('');
+            }else{
+                $('#chanel-switcher-holder').val(total);
+                TV.Control.show_icon('.tv-icons .fa-sort', chanel+'_');
+            }
+        },
+        mute_toggle: function(){
+            if(TV.Control.tv_status()){
+                TV.Control.mute();
+                $('.text-info').text(0);
+            } 
+        },
+        volume_up: function(){
+             if(TV.Control.tv_status()){
+                player.unMute();
+                var volume_level = player.getVolume()+5;
+                player.setVolume(volume_level);
+                volume_level = (player.getVolume()+5)/5 == 21 ? 20: (player.getVolume()+5)/5;
+                TV.Control.show_icon('.tv-icons .fa-volume-up', volume_level);
+            }
+        },
+        volume_down: function(){
+             if(TV.Control.tv_status()){
+                player.unMute();
+                var volume_level = player.getVolume()-5;
+                player.setVolume(volume_level);
+                volume_level = (player.getVolume()-5)/5 == 0 ? 1: (player.getVolume()-5)/5;
+                TV.Control.show_icon('.tv-icons .fa-volume-down', volume_level);
+            }
+        },
+        prev_chanel: function(){
+            if(TV.Control.tv_status()){
+                if (TV.Control.chanel_num() == 1){
+                    chanel = 11
+                    player.playVideoAt(10);
+                }else{
+                    chanel = TV.Control.chanel_num()-1;
+                    player.previousVideo();
+                }
+                TV.Control.show_icon('.tv-icons .fa-sort', chanel);
+            }
+        },
+        next_chanel: function(){
+            if(TV.Control.tv_status()){
+                if (TV.Control.chanel_num() == 11){
+                    chanel = 1
+                    player.playVideoAt(0);
+                }else{
+                    chanel = TV.Control.chanel_num()+1;
+                    player.nextVideo();
+                }
+                TV.Control.show_icon('.tv-icons .fa-sort', chanel);
+            }
+        },
+        sleep: function(){
+            if(TV.Control.tv_status()){
+                seconds = TV.Sleep.get_remaining_time() + TV.Sleep.timerStep;
+                TV.Sleep.clear();
+                TV.Sleep.start_timer(seconds);
+                TV.Control.show_icon('.tv-icons .fa-clock-o', Math.ceil(seconds/60000));
+            }
         }
+    },
+    Sleep:{
+        timerStep : 300000,   // Time beetwen calls
+        timerId: null,
+        // This function starts the timer
+        start_timer: function (seconds){
+           $('#sleep-info').val(seconds).attr('data-created-at', (new Date()).getTime());
+           timerId = setTimeout(TV.Sleep.event_raised, seconds);
+        },
+
+        event_raised: function (){
+            console.log('was');
+            if(TV.Control.tv_status()){
+                TV.Control.on_off($('#power')); 
+            }
+            TV.Sleep.clear();
+        },
+        clear: function(){
+           $('#sleep-info').val(0).attr('data-created-at', 0);
+           clearTimeout(this.timerId); // clear timer
+        },
+        // Gets the number of ms remaining to execute the eventRaised Function
+        get_remaining_time: function (){
+            var seconds = parseInt($('#sleep-info').val());
+            var created_at = parseInt($('#sleep-info').attr('data-created-at'));
+            var in_time =  parseInt(seconds + created_at);
+            left = in_time == 0 ? 0 : in_time - (new Date()).getTime();
+            return  left;
+        },
+        
     }
 }
-
 
 
 $(document).on('click', '#power', function(){
-    var new_class = $(this).attr('class') == 'off' ? 'on' : 'off' ;
-    $(this).attr('class', new_class);
-    if ( new_class == 'off'){
-        $('#cover').show();
-         player.mute();
-    }
-    else{
-        $('.tv-icons').hide();
-        $('#cover').hide();
-        player.unMute();
-        player.playVideo();
-        TV.Control.show_icon('.tv-icons .fa-sort', TV.Control.chanel_num());
-    }
+    TV.Control.on_off($(this));
 });
 
 $(document).on('click','#mute-toggle', function() {
-    if(TV.Control.tv_status()){
-        TV.Control.mute();
-        $('.text-info').text(0);
-    } 
+    TV.Control.mute_toggle();
 });
 
 $(document).on('click', '#volume-up', function(){
-    if(TV.Control.tv_status()){
-        player.unMute();
-        var volume_level = player.getVolume()+5;
-        player.setVolume(volume_level);
-        volume_level = (player.getVolume()+5)/5 == 21 ? 20: (player.getVolume()+5)/5;
-        TV.Control.show_icon('.tv-icons .fa-volume-up', volume_level);
-    }
-    
+    TV.Control.volume_up();
 });
 
 $(document).on('click', '#volume-down', function(){
-    if(TV.Control.tv_status()){
-        player.unMute();
-        var volume_level = player.getVolume()-5;
-        player.setVolume(volume_level);
-        volume_level = (player.getVolume()-5)/5 == 0 ? 1: (player.getVolume()-5)/5;
-        TV.Control.show_icon('.tv-icons .fa-volume-down', volume_level);
-    }
+    TV.Control.volume_down();
 });
 
-
 $(document).on('click', '#prev-chanel', function(){
-    if(TV.Control.tv_status()){
-        if (TV.Control.chanel_num() == 1){
-            chanel = 11
-            player.playVideoAt(10);
-        }else{
-            chanel = TV.Control.chanel_num()-1;
-            player.previousVideo();
-        }
-        TV.Control.show_icon('.tv-icons .fa-sort', chanel);
-    }
+   TV.Control.prev_chanel();
 });
 
 $(document).on('click', '#next-chanel', function(){
-    if(TV.Control.tv_status()){
-        if (TV.Control.chanel_num() == 11){
-            chanel = 1
-            player.playVideoAt(0);
-        }else{
-            chanel = TV.Control.chanel_num()+1;
-            player.nextVideo();
-        }
-        TV.Control.show_icon('.tv-icons .fa-sort', chanel);
-    }
+    TV.Control.next_chanel();
+});
+
+$(document).on('click', '.chanel-switcher', function(){
+   TV.Control.set_chanel($(this));
+});
+
+$(document).on('click', '#sleep', function(){
+   TV.Control.sleep();
 });
 
 
@@ -168,37 +228,6 @@ $(document).on('click', '#next-chanel', function(){
 
 
 
-
-
-
-
-// This function is called by initialize()
-function updateTimerDisplay(){
-    // Update current time text display.
-    $('#current-time').text(formatTime( player.getCurrentTime() ));
-    $('#duration').text(formatTime( player.getDuration() ));
-}
-
-
-// This function is called by initialize()
-function updateProgressBar(){
-    // Update the value of our progress bar accordingly.
-    $('#progress-bar').val((player.getCurrentTime() / player.getDuration()) * 100);
-}
-
-
-// Progress bar
-
-$('#progress-bar').on('mouseup touchend', function (e) {
-
-    // Calculate the new time for the video.
-    // new time in seconds = total duration in seconds * ( value of range input / 100 )
-    var newTime = player.getDuration() * (e.target.value / 100);
-
-    // Skip video to new time.
-    player.seekTo(newTime);
-
-});
 
 
 // Playback
