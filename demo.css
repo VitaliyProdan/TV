@@ -8,7 +8,7 @@ body{
     background-size: 100% 100%;
 }
 
-#video-placeholder{
+#video-wrapper{
 	padding-top: 37px;
     padding-bottom: 206px;
     background: url(images/tele2.png) no-repeat;
@@ -21,6 +21,26 @@ body{
     left: 175px;
     position: relative;
 }
+#video-placeholder{
+	padding-bottom: 206px;
+    width: 805px;
+    height: 575px;
+    padding-left: 33px;
+    padding-right: 114px;
+    display: block;
+    background-size: 90%;
+    left: -33px;
+    position: relative;	
+}
+#internet-placeholder{
+    width: 652px;
+    height: 367px;
+    display: none;
+    background-size: 90%;
+    left: 2px;
+    position: relative;
+}
+
 #cover{
     position: relative;
     display: block;
@@ -29,7 +49,18 @@ body{
     width: 657px;
     height: 370px;
     background: #000;
+    z-index: 3;
+}
+#settings-cover{
+	position: relative;
+    display: none;
+    left: 209px;
+    top: -598px;
+    width: 657px;
+    height: 370px;
+    background: #0099DA;
     z-index: 2;
+    text-align: center;
 }
 #power{
     position: relative;
@@ -115,6 +146,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
     color: #fff;
     font-size: 30px;
     top: 54px;
+}
+#settings-cover .icons{
+    width: 81px;
+    margin: auto;
+    cursor: pointer;
+    color: #fff;
 }
 
  /* -webkit-filter: brightness(0.05); */

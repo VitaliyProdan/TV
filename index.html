@@ -19,9 +19,20 @@
 <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
 
 <div class="wrapper">
-	<div id="video-placeholder"></div>
+	<div id="video-wrapper">
+		<div id="video-placeholder"></div>
+		<iframe id="internet-placeholder" src="http://ukr.net"  width="652" height="367px"></iframe><!-- http://www.w3schools.com -->
+	</div>
 	<div id="power" class="off"></div>
 	<div id="cover"></div>
+	<div id="settings-cover">
+		<a class="icons">
+			<i class="fa fa-television fa-5x"></i>
+		</a>
+		<a class="icons">
+			<i class="fa fa-internet-explorer fa-5x"></i>
+		</a>
+	</div>
 	<div class="tv-icons">
 		<i class="fa fa-volume-off fa-4x tv-icon"></i>
 		<i class="fa fa-volume-up fa-4x tv-icon"></i>
@@ -66,6 +77,9 @@
 	</div>
 	<div class="block-1-3 console-button" id="sleep">
 		<i class="fa fa-hourglass-half fa-lg"></i>
+	</div>
+	<div class="block-1-3 console-button" id="settings">
+		<i class="fa fa-bars fa-lg"></i>
 	</div>
 
 

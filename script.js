@@ -100,7 +100,6 @@ TV = {
         mute_toggle: function(){
             if(TV.Control.tv_status()){
                 TV.Control.mute();
-                $('.text-info').text(0);
             } 
         },
         volume_up: function(){
@@ -152,7 +151,8 @@ TV = {
                 TV.Sleep.start_timer(seconds);
                 TV.Control.show_icon('.tv-icons .fa-clock-o', Math.ceil(seconds/60000));
             }
-        }
+        },
+        
     },
     Sleep:{
         timerStep : 300000,   // Time beetwen calls
@@ -183,6 +183,30 @@ TV = {
             return  left;
         },
         
+    },
+    Settings:{
+    	screen_toggle: function(){
+    		if(TV.Control.tv_status()){
+    			$('#settings-cover').toggle();
+    		}
+    	},
+    	browser_show: function(){
+    		TV.Settings.change_mode(); 
+    		$('#settings-cover').hide();
+    		$('#internet-placeholder').show();
+    	},
+    	change_mode: function(){
+        	 if(TV.Control.tv_status()){
+        	 	player.mute();
+        	 	$('#video-placeholder').hide();
+        	 }
+        },
+        tv_mode: function(){
+ 			if(TV.Control.tv_status()){
+        	 	player.unMute();
+        	 	$('#video-placeholder').show();
+        	 }
+        },
     }
 }
 
@@ -219,6 +243,19 @@ $(document).on('click', '#sleep', function(){
    TV.Control.sleep();
 });
 
+$(document).on('click', '#settings', function(){
+   TV.Settings.screen_toggle();
+});
+
+$(document).on('click', '.fa-internet-explorer', function(){
+   TV.Settings.browser_show();
+});
+
+$(document).on('click', '.fa-television', function(){
+	$('#settings-cover').hide();
+	$('#video-wrapper').children().hide();
+	TV.Settings.tv_mode();
+});
 
 
 
