@@ -152,7 +152,35 @@ TV = {
                 TV.Control.show_icon('.tv-icons .fa-clock-o', Math.ceil(seconds/60000));
             }
         },
-        
+        clear_all: function(){
+        	$('#video-wrapper').children().hide();
+        	$('.covers').hide();
+        	//player.mute();
+        },
+      //   up: function(){
+      //   	$('#frogs-area').focus();  
+      //   	var e = jQuery.Event("keypress");
+    		// e.keyCode = 38;                     
+    		// //$('#frogs-area').trigger(e);         
+      //   },
+      //   down: function(){
+      //   	$('#frogs-area').focus();  
+      //   	var e = jQuery.Event("keypress");
+    		// e.keyCode = 40;                     
+    		// //$('#frogs-area').trigger(e);           
+      //   },
+      //   left: function(){
+      //   	$('#frogs-area').focus();  
+      //   	var e = jQuery.Event("keypress");
+    		// e.keyCode = 37;                     
+    		// //$('#frogs-area').trigger(e);               
+      //   },
+      //   right: function(){
+      //   	$('#frogs-area').focus();       
+      //   	var e = jQuery.Event("keypress");
+    		// e.keyCode = 39;
+    		// //$('#frogs-area').trigger(e);          
+      //   },
     },
     Sleep:{
         timerStep : 300000,   // Time beetwen calls
@@ -187,12 +215,14 @@ TV = {
     Settings:{
     	screen_toggle: function(){
     		if(TV.Control.tv_status()){
+				$('.covers').hide();
     			$('#settings-cover').toggle();
     		}
     	},
     	browser_show: function(){
     		TV.Settings.change_mode(); 
-    		$('#settings-cover').hide();
+    		//$('#settings-cover').hide();
+    		TV.Control.clear_all();
     		$('#internet-placeholder').show();
     	},
     	change_mode: function(){
@@ -207,6 +237,20 @@ TV = {
         	 	$('#video-placeholder').show();
         	 }
         },
+    },
+    Apps: {
+    	cover_show: function(){
+    		$('.covers').hide();
+    		$('#apps-cover').show();
+    	},
+    	play_frogs: function(){
+    		TV.Control.clear_all();
+            $('#frogs-area').show();
+    	},
+    	play_warship: function(){
+    		TV.Control.clear_all();
+    		$('#warship-area').show();
+    	}
     }
 }
 
@@ -256,6 +300,26 @@ $(document).on('click', '.fa-television', function(){
 	$('#video-wrapper').children().hide();
 	TV.Settings.tv_mode();
 });
+
+$(document).on('click', '.fa-gamepad', function(){
+   TV.Apps.cover_show();
+});
+
+$(document).on('click', '.fa-gitlab', function(){
+   TV.Apps.play_frogs();
+});
+
+$(document).on('click', '.fa-ship', function(){
+   TV.Apps.play_warship();
+});
+
+
+// $(document).on('click', '#up, #down, #left, #right', function(){
+// 	var func = $(this).attr('id');
+// 	TV.Control[func]();
+// });
+
+
 
 
 
