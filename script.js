@@ -30,13 +30,20 @@ TV = {
             selector.attr('class', new_class);
             if ( new_class == 'off'){
                 TV.Control.drop_prev_icons();
+                TV.Control.clear_all();
+                $('.covers').hide();
                 $('#cover').show();
+                //$('#video-wrapper').children().hide();
+        		
                 player.mute();
                 TV.Sleep.clear();
             }
             else{
                 $('.tv-icons').hide();
-                $('#cover').hide();
+                TV.Control.clear_all();
+
+                $('#video-placeholder').show();
+                //$('#cover').hide();
                 player.unMute();
                 player.playVideo();
                 TV.Control.show_icon('.tv-icons .fa-sort', TV.Control.chanel_num());
