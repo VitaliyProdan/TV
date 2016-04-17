@@ -32,7 +32,7 @@ body{
     left: -33px;
     position: relative;	
 }
-#internet-placeholder, #frogs-area, #warship-area{
+#internet-placeholder, #frogs-area, #warship-area, #file-manager-area{
     width: 652px;
     height: 367px;
     display: none;
@@ -51,7 +51,7 @@ body{
     background: #000;
     z-index: 3;
 }
-#settings-cover, #apps-cover{
+#settings-cover, #apps-cover, #config-cover{
 	position: relative;
     display: none;
     left: 209px;
@@ -150,7 +150,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
     margin: 0 25px;
 }
 .covers .icons:nth-child(-n+3){
-    line-height: 275px;
+    line-height: 200px;
 }
 .clearfix{
     height: 55px;
@@ -161,6 +161,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
 #console .stumb{
 	visibility: hidden;
 }
-
+#config-cover{
+    background: rgba(0,153,218,0);
+}
+.contrast-value, .brightness-value{
+    font-size: 4em;
+    margin-right: 20px;
+}
  /* -webkit-filter: brightness(0.05); */
     /* -webkit-filter: contrast(4.7); */

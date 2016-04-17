@@ -20,6 +20,8 @@ function onYouTubeIframeAPIReady() {
 }
 function initialize(){
 	player.mute();
+    TV.Config.accept_filters();
+    console.log(123);
     $('#volume-input').val(Math.round(player.getVolume()));
 }
 
@@ -244,6 +246,10 @@ TV = {
         	 	$('#video-placeholder').show();
         	 }
         },
+        show_file_manager: function(){
+            TV.Control.clear_all();
+            $('#file-manager-area').show();
+        }
     },
     Apps: {
     	cover_show: function(){
@@ -257,8 +263,67 @@ TV = {
     	play_warship: function(){
     		TV.Control.clear_all();
     		$('#warship-area').show();
-    	}
+    	},
+    },
+    Config: {
+        cover_show: function(){
+            $('.covers').hide();
+            $('#config-cover').show();
+            TV.Config.show_brightness_value();
+            TV.Config.show_contrast_value();
+        },
+        show_brightness_value: function(){
+            brightness_value = TV.Config.get_filter_value(0, 'brightness_value');
+            $('span.brightness-value').text(parseFloat(brightness_value));
+        },
+        show_contrast_value: function(){
+            contrast_value = TV.Config.get_filter_value(0, "contrast_value");
+            $('span.contrast-value').text(parseFloat(contrast_value));
+        },
+        get_filter_value: function(step, attrib){
+            var filter_value = localStorage.getItem(attrib);
+            if (filter_value == undefined){
+                filter_value = 1; 
+            }else{
+                filter_value = (parseFloat(filter_value) + parseFloat(step)).toFixed(2); 
+            }
+            if (filter_value < 0){
+                filter_value = 0;
+            }else if(filter_value > 1){
+                filter_value = 1;
+            }
+            localStorage.setItem(attrib, filter_value);
+            return filter_value;
+        },
+        brightness_plus: function(){
+           brightness_value = TV.Config.get_filter_value(0.1, 'brightness_value');
+           $('#video-placeholder').css('-webkit-filter', 'brightness('+brightness_value+')');
+           TV.Config.show_brightness_value();
+        },
+        brightness_minus: function(){
+            brightness_value = TV.Config.get_filter_value(-0.1, 'brightness_value');
+            $('#video-placeholder').css('-webkit-filter', 'brightness('+brightness_value+')');
+            TV.Config.show_brightness_value();
+        },
+        contrast_plus: function(){
+            contrast_value = TV.Config.get_filter_value(0.1, "contrast_value");
+            $('#video-placeholder').css('-webkit-filter', 'contrast('+contrast_value+')');
+            TV.Config.show_contrast_value();
+        },
+        contrast_minus: function(){
+            contrast_value = TV.Config.get_filter_value(-0.1, "contrast_value");
+            $('#video-placeholder').css('-webkit-filter', 'contrast('+contrast_value+')');
+            TV.Config.show_contrast_value();
+        },
+        accept_filters: function(){
+            brightness_value = TV.Config.get_filter_value(0, 'brightness_value');
+            $('#video-placeholder').css('-webkit-filter', 'brightness('+brightness_value+')');
+            contrast_value = TV.Config.get_filter_value(0, "contrast_value");
+            $('#video-placeholder').css('-webkit-filter', 'contrast('+contrast_value+')');
+        }
+        
     }
+
 }
 
 
@@ -319,6 +384,31 @@ $(document).on('click', '.fa-gitlab', function(){
 $(document).on('click', '.fa-ship', function(){
    TV.Apps.play_warship();
 });
+
+$(document).on('click', '.fa-files-o', function(){
+   TV.Settings.show_file_manager();
+});
+
+$(document).on('click', '.fa-sliders', function(){
+   TV.Config.cover_show();
+});
+
+$(document).on('click', '.fa-plus-circle.contrast', function(){
+   TV.Config.contrast_plus();
+});
+
+$(document).on('click', '.fa-minus-circle.contrast', function(){
+   TV.Config.contrast_minus();
+});
+
+$(document).on('click', '.fa-plus-circle.brightness', function(){
+   TV.Config.brightness_plus();
+});
+
+$(document).on('click', '.fa-minus-circle.brightness', function(){
+    TV.Config.brightness_minus();
+});
+
 
 
 // $(document).on('click', '#up, #down, #left, #right', function(){
