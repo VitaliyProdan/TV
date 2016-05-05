@@ -7,8 +7,8 @@ function onYouTubeIframeAPIReady() {
         videoId: 'Xa0Q0J5tOP0',
         playerVars: {
             color: 'white',
-            playlist: 'taJ60kskkns,FG0fTKAqZ5g,vKH-rcO6PA8,wIyoTuZ9r3c,NFn_So_WWEs,y53AyAjQy9s,4Chi66oF_Tk,7o_w_Sy6bU0,ebHXNvO77yE,1fc_-tzvls0',
-			controls: 0,
+            playlist: 'taJ60kskkns,FG0fTKAqZ5g,vKH-rcO6PA8,wIyoTuZ9r3c,NFn_So_WWEs,y53AyAjQy9s,4Chi66oF_Tk,7o_w_Sy6bU0,Ocu1x3do1eY,1fc_-tzvls0',
+            controls: 0,
 			showinfo: 0,
 			autoplay: 0,
 			modestbranding: 1
