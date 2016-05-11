@@ -513,7 +513,7 @@ String.prototype.replaceAt=function(index, character) {
 // });
 
 
-Disable right click
+// Disable right click
 var message="";
 function clickIE() {
     if (document.all) {
