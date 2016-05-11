@@ -427,7 +427,6 @@ $(document).on('click', '.fa-minus-circle.brightness', function(){
 
 
 
-
 // Playback
 
 $('#play').on('click', function () {
@@ -499,3 +498,27 @@ $('pre code').each(function(i, block) {
     hljs.highlightBlock(block);
 });
 
+
+//Disable right click
+var message="";
+function clickIE() {
+    if (document.all) {
+        (message);return false;
+    }
+}
+function clickNS(e) {
+    if (document.layers||(document.getElementById&&!document.all)) {
+        if (e.which==2) {
+            (message);
+            return false;
+        }
+    }
+}
+if (document.layers) {
+    document.captureEvents(Event.MOUSEDOWN);
+    document.onmousedown=clickNS;
+}else{
+    document.onmouseup=clickNS;
+    document.oncontextmenu=clickIE;
+}
+document.oncontextmenu=new Function("return false")

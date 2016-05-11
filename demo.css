@@ -170,3 +170,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
 }
  /* -webkit-filter: brightness(0.05); */
     /* -webkit-filter: contrast(4.7); */
+
+
+/*disable select text*/
+body {
+-webkit-user-select: none;
+/* user-select -- это нестандартное свойство */
+
+-moz-user-select: none;
+/* поэтому нужны префиксы */
+
+-ms-user-select: none;
+}
