@@ -361,7 +361,7 @@ TV = {
                     break;
                 }
                 case 5: {
-                    if (jQuery.inArray(new_number, [0, 1, 2, 3, 4, 5, 6] ) != -1 ){
+                    if (jQuery.inArray(new_number, [0, 1, 2, 3, 4, 5] ) != -1 ){
                         value = value.replaceAt(position, new_number);
                     }
                     break;
@@ -395,7 +395,9 @@ TV = {
             var now = (new Date()).getTime();
             time = time - now;
             console.log(time);
-            setTimeout(TV.Config.off_by_time, time);
+            if (time > 0){
+                setTimeout(TV.Config.off_by_time, time);
+            }
         },
         off_by_time: function () {
             if(TV.Control.tv_status() && $('#timer-setting').hasClass('enabled')){
