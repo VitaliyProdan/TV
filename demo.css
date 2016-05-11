@@ -150,7 +150,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
     margin: 0 25px;
 }
 .covers .icons:nth-child(-n+3){
-    line-height: 200px;
+    line-height: 115px;
 }
 .clearfix{
     height: 55px;
@@ -168,8 +168,21 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fef5', end
     font-size: 4em;
     margin-right: 20px;
 }
- /* -webkit-filter: brightness(0.05); */
-    /* -webkit-filter: contrast(4.7); */
+.timer-value{
+    font-size: 3em;
+}
+#timer-setting i{
+    margin-left: 45px;
+    line-height: 135px;
+}
+#timer-setting.disabled i{
+    color: #3E423E;
+}
+#timer-setting.enabled i{
+    color: #ffffff;
+}
+/* -webkit-filter: brightness(0.05); */
+/* -webkit-filter: contrast(4.7); */
 
 
 /*disable select text*/

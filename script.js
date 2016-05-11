@@ -28,6 +28,7 @@ function initialize(){
 TV = {
     Control: {
         on_off: function(selector){
+            $('body').removeClass('timer-set');
             var new_class = selector.attr('class') == 'off' ? 'on' : 'off' ;
             selector.attr('class', new_class);
             if ( new_class == 'off'){
@@ -320,11 +321,93 @@ TV = {
             $('#video-placeholder').css('-webkit-filter', 'brightness('+brightness_value+')');
             contrast_value = TV.Config.get_filter_value(0, "contrast_value");
             $('#video-placeholder').css('-webkit-filter', 'contrast('+contrast_value+')');
+        },
+        disabe_enable_timer: function () {
+            $timer = $('#timer-setting');
+            var status = $timer.attr('class').split(' ').pop();
+            var new_status = status == 'disabled' ? 'enabled' : 'disabled';
+            $timer.removeClass(status).addClass(new_status);
+            if (status == 'disabled'){
+                $('.timer-value').text('__ : __');
+                for(i=0;i<7;i++) {
+                    $(".timer-value").fadeTo(400, 0).fadeTo(400, 1);
+                }
+            }else{
+                $('body').removeClass('timer-set');
+            }
+            $('body').addClass('timer-set');
+        },
+        set_time: function (elem) {
+            var value = $('.timer-value').text();
+            var new_number = parseInt($(elem).text());
+            position = value.indexOf('_');
+            switch(position) {
+                case 0: {
+                    if (jQuery.inArray(new_number, [0, 1, 2] ) != -1){
+                        value = value.replaceAt(position, new_number);
+                    }
+                    break;
+                }
+                case 1: {
+                    if (value[0] == 0 || value[0] == 1){
+                        if (jQuery.inArray(new_number, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] ) != -1){
+                            value = value.replaceAt(position, new_number);
+                        }
+                    }else if(value[0] == 2){
+                        if (jQuery.inArray(new_number, [0, 1, 2, 3] ) != -1){
+                            value = value.replaceAt(position, new_number);
+                        }
+                    }
+                    break;
+                }
+                case 5: {
+                    if (jQuery.inArray(new_number, [0, 1, 2, 3, 4, 5, 6] ) != -1 ){
+                        value = value.replaceAt(position, new_number);
+                    }
+                    break;
+                }
+                case 6: {
+                    if (jQuery.inArray(new_number, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] ) != -1 ){
+                        value = value.replaceAt(position, new_number);
+                        $('.timer-value').text(value);
+                        TV.Config.run_timer();
+                    }
+
+                    break;
+                }
+                default:{
+                    TV.Config.run_timer();
+                    break;
+                }
+            }
+            $('.timer-value').text(value);
+        },
+        timerId: null,
+        run_timer: function () {
+            clearTimeout(TV.Config.timerId)
+            $('body').removeClass('timer-set');
+            $timer_dom =  $('.timer-value');
+            var hours = $timer_dom.text().split(':')[0];
+            var minutes = $timer_dom.text().split(':')[1];
+            var time = (new Date()).setHours(hours);
+            time = (new Date(time)).setMinutes(minutes);
+            time = (new Date(time)).setSeconds(0);
+            var now = (new Date()).getTime();
+            time = time - now;
+            console.log(time);
+            setTimeout(TV.Config.off_by_time, time);
+        },
+        off_by_time: function () {
+            if(TV.Control.tv_status() && $('#timer-setting').hasClass('enabled')){
+                TV.Control.on_off($('#power'));
+                TV.Sleep.clear();
+            }
         }
-        
+
+
     }
 
-}
+};
 
 
 $(document).on('click', '#power', function(){
@@ -351,7 +434,7 @@ $(document).on('click', '#next-chanel', function(){
     TV.Control.next_chanel();
 });
 
-$(document).on('click', '.chanel-switcher', function(){
+$(document).on('click', 'body:not(.timer-set) .chanel-switcher', function(){
    TV.Control.set_chanel($(this));
 });
 
@@ -360,7 +443,8 @@ $(document).on('click', '#sleep', function(){
 });
 
 $(document).on('click', '#settings', function(){
-   TV.Settings.screen_toggle();
+    TV.Settings.screen_toggle();
+    $('body').removeClass('timer-set');
 });
 
 $(document).on('click', '.fa-internet-explorer', function(){
@@ -409,7 +493,19 @@ $(document).on('click', '.fa-minus-circle.brightness', function(){
     TV.Config.brightness_minus();
 });
 
+$(document).on('click', '#timer-setting i', function(){
+    TV.Config.disabe_enable_timer();
+});
 
+$(document).on('click', 'body.timer-set .chanel-switcher', function(){
+    TV.Config.set_time($(this));
+});
+
+String.prototype.replaceAt=function(index, character) {
+    var str = this.split('');
+    str[index] = character;
+    return str.join('');
+};
 
 // $(document).on('click', '#up, #down, #left, #right', function(){
 // 	var func = $(this).attr('id');
@@ -417,89 +513,7 @@ $(document).on('click', '.fa-minus-circle.brightness', function(){
 // });
 
 
-
-
-
-
-
-
-
-
-
-
-// Playback
-
-$('#play').on('click', function () {
-    player.playVideo();
-});
-
-
-$('#pause').on('click', function () {
-    player.pauseVideo();
-});
-
-
-// Sound volume
-
-
-
-
-
-
-// Other options
-
-
-$('#speed').on('change', function () {
-    player.setPlaybackRate($(this).val());
-});
-
-$('#quality').on('change', function () {
-    player.setPlaybackQuality($(this).val());
-});
-
-
-// Playlist
-
-$('#next').on('click', function () {
-    player.nextVideo()
-});
-
-$('#prev').on('click', function () {
-    player.previousVideo()
-});
-
-
-// Load video
-
-$('.thumbnail').on('click', function () {
-
-    var url = $(this).attr('data-video-id');
-
-    player.cueVideoById(url);
-
-});
-
-
-// Helper Functions
-
-function formatTime(time){
-    time = Math.round(time);
-
-    var minutes = Math.floor(time / 60),
-        seconds = time - minutes * 60;
-
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-
-    return minutes + ":" + seconds;
-}
-
-
-$('pre code').each(function(i, block) {
-    hljs.highlightBlock(block);
-});
-
-
-//Disable right click
+Disable right click
 var message="";
 function clickIE() {
     if (document.all) {
