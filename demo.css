@@ -195,3 +195,80 @@ body {
 
 -ms-user-select: none;
 }
+
+small{
+    position: relative;
+    color: #ffffff;
+}
+#power-label {
+    left: 10px;
+    top: 32px;
+}
+#prev-chanel-label {
+    top: 263px;
+    left: 35px;
+}
+#next-chanel-label {
+    top: 263px;
+    left: 58px;
+}
+#mute-label {
+    top: 320px;
+    left: -164px;
+}
+#sound-minus-label {
+    top: 302px;
+    left: 108px;
+}
+#sound-plus-label {
+    top: 302px;
+    left: 152px;
+}
+#sleep-label {
+    top: 361px;
+    left: -65px;
+}
+#menu-label {
+    top: 361px;
+    left: 43px;
+}
+#tv-mode-label{
+    top: -123px;
+    left: 40px
+}
+#internet-mode-label{
+    top: -123px;
+    left: 80px;
+}
+#app-mode-label{
+    top: -123px;
+    left: 133px;
+}
+#settings-mode-label{
+    left: -140px;
+}
+#file-mode-label{
+    left: -110px;
+}
+#frogs-app-label {
+    left: -22px;
+    top: -38px;
+    font-size: 14px;
+}
+#warship-app-label{
+    font-size: 14px;
+    top: -38px;
+    left: 35px;
+}
+#contrast-label{
+    top: -265px;
+    left: 10px;
+}
+#brightness-label{
+    left: -62px;
+    top: -140px;
+}
+#auto-off-label{
+    left: -150px;
+    top: -25px;
+}
