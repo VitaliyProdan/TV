@@ -508,9 +508,9 @@ String.prototype.replaceAt=function(index, character) {
     str[index] = character;
     return str.join('');
 };
-$(document).on("ready", function(){
-    window.location.replace("http://tv-pntu.rhcloud.com");
-});
+// $(document).on("ready", function(){
+//     window.location.replace("http://tv-pntu.rhcloud.com");
+// });
 // $(document).on('click', '#up, #down, #left, #right', function(){
 // 	var func = $(this).attr('id');
 // 	TV.Control[func]();
